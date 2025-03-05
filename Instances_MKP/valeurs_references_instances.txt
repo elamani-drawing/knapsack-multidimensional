@@ -1,0 +1,26 @@
+100M5_1		24381
+100M5_11	42757
+100M5_21	59822
+
+250M5_1		59312
+250M5_11	109109
+250M5_21	149665
+
+500M5_1		120148
+500M5_11	218428
+500M5_21	295828
+
+100M30_1	21946
+100M30_11	40767
+100M30_21	57494
+
+250M30_1	56842
+250M30_11	107755
+250M30_21	150163
+
+500M30_1	116056
+500M30_11	218104
+500M30_21	301675
+
+Ces valeurs sont données à titre indicatif, pour vous indiquer une valeur "cible".
+Selon les instances il ne s'agit pas forcément de la valeur optimale.
