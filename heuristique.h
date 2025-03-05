@@ -108,3 +108,45 @@ void local_search_swap(KnapsackSolution *solution, const KnapsackInstance *insta
  * @note La solution initiale doit être définie avant d'appeler cette fonction.
  */
 void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackInstance *instance);
+
+/**
+ * @brief Effectue une perturbation aléatoire sur une solution en inversant l'état de k objets choisis au hasard dans la solution.
+ * 
+ * Cette fonction perturbe la solution actuelle en inversant l'état de k objets sélectionnés aléatoirement. Si un objet est inclus dans la solution, il sera retiré, et si un objet n'est pas inclus, il sera ajouté. La faisabilité de la solution est vérifiée après chaque inversion.
+ * Si la solution devient invalide (dépassement de la capacité), l'inversion de l'objet est annulée.
+ *
+ * @param solution Pointeur vers la solution du problème du sac à dos. La solution sera modifiée directement.
+ * @param instance Pointeur vers l'instance du problème du sac à dos, contenant les informations sur les objets (poids, valeur) et la capacité du sac.
+ * @param k Le nombre d'objets à perturber. Cette valeur détermine combien d'objets seront sélectionnés et dont l'état sera inversé.
+ *
+ * @note Cette fonction utilise un générateur de nombres aléatoires pour sélectionner les objets à perturber. Il est nécessaire d'initialiser le générateur de nombres aléatoires en appelant `srand(time(NULL))` avant l'utilisation de cette fonction, si ce n'est pas déjà fait ailleurs dans le programme.
+ *
+ * @example
+ * KnapsackSolution solution = init_solution(instance->n);
+ * random_flip(&solution, &instance, 5); // Perturber aléatoirement 5 objets dans la solution
+ */
+void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, int k);
+
+
+/**
+ * @brief Algorithme de recherche à voisinage variable (VNS) pour le problème du sac à dos.
+ *
+ * Cette fonction applique l'algorithme VNS en alternant entre la recherche locale
+ * avec descente de voisinage variable (VND) et une phase de perturbation aléatoire.
+ *
+ * @param solution Pointeur vers la solution initiale du problème du sac à dos. 
+ *        Cette solution sera modifiée au cours de l'exécution.
+ * @param instance Pointeur vers l'instance du problème contenant les objets et les contraintes.
+ * @param max_iterations Nombre maximum d'itérations du VNS.
+ * @param k Intensité de la perturbation (nombre d'objets modifiés lors de la phase de perturbation).
+ *
+ * @details
+ * - À chaque itération, l'algorithme commence par appliquer la **VND** pour améliorer localement la solution.
+ * - Ensuite, une **perturbation aléatoire** (ex: `random_flip`) est appliquée pour échapper aux optima locaux.
+ * - Une nouvelle VND est ensuite effectuée à partir de la solution perturbée.
+ * - Si la nouvelle solution est meilleure, elle est adoptée ; sinon, l'ancienne est restaurée.
+ *
+ * @note La fonction `variable_neighborhood_descent` est utilisée comme stratégie de recherche locale.
+ * @note La fonction `random_flip` est utilisée comme stratégie de perturbation.
+ */
+void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k);

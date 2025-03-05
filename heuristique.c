@@ -6,7 +6,6 @@
 KnapsackSolution *random_initial_solution(const KnapsackInstance *instance)
 {
     KnapsackSolution *solution = init_solution(instance->n);
-    srand(time(NULL));
 
     // Copier les capacités pour ne pas modifier l'instance originale
     int *remaining_capacities = copy_capacities(instance);
@@ -39,8 +38,6 @@ KnapsackSolution *random_initial_solution(const KnapsackInstance *instance)
 
 void random_construction(KnapsackSolution *solution, const KnapsackInstance *instance)
 {
-    srand(time(NULL)); // Initialisation du générateur de nombres aléatoires
-
     for (int i = 0; i < instance->n; i++)
     {
         solution->x[i] = rand() % 2; // 0 ou 1, objet sélectionné ou non
@@ -278,4 +275,58 @@ void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackIns
             }
         }
     } while (improved);
+}
+
+
+void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, int k) {
+
+    for (int p = 0; p < k; p++) {
+        // Choisir un objet aléatoire
+        int i = rand() % instance->n;
+
+        // Inverser l'état de l'objet
+        solution->x[i] = 1 - solution->x[i];
+
+        // Vérifier si la solution reste faisable
+        if (!is_feasible(solution, instance)) {
+            // Annuler la perturbation si la solution devient invalide
+            solution->x[i] = 1 - solution->x[i];
+        }
+    }
+}
+
+void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k) {
+    int iteration = 0;
+
+    // Initialiser la meilleure solution avec init_solution
+    KnapsackSolution *best_solution = init_solution(instance->n);
+
+    while (iteration < max_iterations) {
+        // Phase de VND
+        variable_neighborhood_descent(solution, instance);
+
+        // Sauvegarder la meilleure solution trouvée (copie profonde)
+        if (solution->Z > best_solution->Z) {
+            copy_knapsack_solution(best_solution, solution, instance->n);
+        }
+
+        // Phase de perturbation
+        random_flip(solution, instance, k);
+
+        // Phase de VND après perturbation
+        variable_neighborhood_descent(solution, instance);
+
+        // Si la solution après perturbation est meilleure, la conserver
+        if (solution->Z > best_solution->Z) {
+            copy_knapsack_solution(best_solution, solution, instance->n);
+        } else {
+            // Sinon, revenir à la meilleure solution précédente
+            copy_knapsack_solution(solution, best_solution, instance->n);
+        }
+
+        iteration++;
+    }
+
+    // Libérer la mémoire de la meilleure solution
+    free_solution(best_solution);
 }

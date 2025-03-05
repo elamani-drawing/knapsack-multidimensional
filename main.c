@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
         printf("Usage: %s <fichier_instance> <temps_max>\n", argv[0]);
         return 1;
     }
+    srand(time(NULL));
 
     KnapsackInstance ksInstance;
     read_knapsack_file(argv[1], &ksInstance);
@@ -20,8 +21,14 @@ int main(int argc, char *argv[])
     // local_search_1_flip(ksSolution, &ksInstance);
     // local_search_swap(ksSolution, &ksInstance);
 
-    printf("Avant neighborhood descent : Z = %d\n", ksSolution->Z);
-    variable_neighborhood_descent(ksSolution, &ksInstance);
+    // printf("Avant neighborhood descent : Z = %d\n", ksSolution->Z);
+    // variable_neighborhood_descent(ksSolution, &ksInstance);
+
+    // Appliquer la recherche à voisinage variable (VNS)
+    printf("Avant VNS descent : Z = %d\n", ksSolution->Z);
+    int max_iterations = 100; // Nombre maximum d'itérations
+    int k = 2; // Nombre d'objets à perturber
+    variable_neighborhood_search(ksSolution, &ksInstance, max_iterations, k);
 
     print_solution(ksSolution, &ksInstance);
     print_solution_index(ksSolution, ksInstance.n);

@@ -140,6 +140,18 @@ KnapsackSolution *init_solution(int n)
     return solution;
 }
 
+void copy_knapsack_solution(KnapsackSolution *dest, const KnapsackSolution *src, int n) {
+    dest->Z = src->Z; // Copier la valeur de la solution
+    dest->x = (int *)malloc(n * sizeof(int)); // Allouer de la mémoire pour le tableau x
+    if (dest->x == NULL) {
+        fprintf(stderr, "Erreur : allocation mémoire échouée (copy_knapsack_solution).\n");
+        exit(EXIT_FAILURE);
+    }
+    for (int i = 0; i < n; i++) {
+        dest->x[i] = src->x[i]; // Copier les éléments du tableau x
+    }
+}
+
 void reset_solution(KnapsackSolution *solution, int n)
 {
     // Réinitialisation de la solution à zéro (aucun objet sélectionné)
