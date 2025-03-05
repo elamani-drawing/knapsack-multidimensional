@@ -1,6 +1,6 @@
 CC = gcc
 
-SRC = main.c knapsack.c heuristique.c utils.c
+SRC = main.c knapsack.c heuristique.c 
 OBJ = $(SRC:.c=.o)
 EXEC = sadm_solver
 
