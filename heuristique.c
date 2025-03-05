@@ -126,35 +126,6 @@ KnapsackSolution *greedy_initial_solution(const KnapsackInstance *instance)
         exit(EXIT_FAILURE);
     }
 
-    /*
-    // Ajouter les objets un par un tant que les contraintes ne sont pas violées
-    for (int i = 0; i < instance->n; i++)
-    {
-        int object_index = indices[i];
-
-        // Vérifier si l'ajout de l'objet respecte toutes les contraintes
-        int feasible = 1;
-        for (int j = 0; j < instance->m; j++)
-        {
-            if (solution->x[object_index] == 1 ||
-                instance->weights[j][object_index] > remaining_capacities[j])
-            {
-                feasible = 0;
-                break;
-            }
-        }
-
-        if (feasible)
-        {
-            solution->x[object_index] = 1; // Ajouter l'objet à la solution
-            for (int j = 0; j < instance->m; j++)
-            {
-                remaining_capacities[j] -= instance->weights[j][object_index];
-            }
-        }
-    }
-    */
-
     // Ajouter les objets un par un tant que les contraintes ne sont pas violées
     for (int i = 0; i < instance->n; i++)
     {
@@ -176,4 +147,135 @@ KnapsackSolution *greedy_initial_solution(const KnapsackInstance *instance)
     free(remaining_capacities);
 
     return solution;
+}
+
+void local_search_1_flip(KnapsackSolution *solution, const KnapsackInstance *instance)
+{
+    int improved = 1;
+
+    // Continue la recherche tant qu'il y a des améliorations possibles
+    while (improved)
+    {
+        improved = 0;
+
+        // Tester chaque objet en l'ajoutant ou en le retirant de la solution
+        for (int i = 0; i < instance->n; i++)
+        {
+            // Sauvegarder l'ancienne valeur de la solution
+            int old_Z = solution->Z;
+
+            // Effectuer le flip (inversion de l'état de l'objet)
+            solution->x[i] = 1 - solution->x[i];
+
+            // Vérifier si la solution est toujours faisable
+            if (is_feasible(solution, instance))
+            {
+                // Calculer la nouvelle valeur de la solution
+                evaluate_solution(solution, instance);
+
+                // Si la solution s'est améliorée, garder ce flip
+                if (solution->Z > old_Z)
+                {
+                    improved = 1;
+                    // break; // Sortir de la boucle for pour recommencer l'exploration
+                }
+                else
+                {
+                    // Annuler le flip si la solution ne s'est pas améliorée
+                    solution->x[i] = 1 - solution->x[i];
+                    solution->Z = old_Z;
+                }
+            }
+            else
+            {
+                // Annuler le flip si la solution devient invalide
+                solution->x[i] = 1 - solution->x[i];
+            }
+        }
+    }
+}
+
+void local_search_swap(KnapsackSolution *solution, const KnapsackInstance *instance)
+{
+    int improved = 1;
+
+    // Continue la recherche tant qu'il y a des améliorations possibles
+    while (improved)
+    {
+        improved = 0;
+
+        // Tester tous les échanges possibles
+        for (int i = 0; i < instance->n; i++)
+        {
+            for (int j = i + 1; j < instance->n; j++)
+            {
+                // Si un objet est sélectionné et l'autre ne l'est pas, on les échange
+                if (solution->x[i] != solution->x[j])
+                {
+                    // Sauvegarder l'ancienne valeur de la solution
+                    int old_Z = solution->Z;
+
+                    // Échanger les objets i et j
+                    solution->x[i] = 1 - solution->x[i];
+                    solution->x[j] = 1 - solution->x[j];
+
+                    // Vérifier si la solution reste faisable après l'échange
+                    if (is_feasible(solution, instance))
+                    {
+                        // Calculer la nouvelle valeur de la solution
+                        evaluate_solution(solution, instance);
+
+                        // Si la solution s'est améliorée, garder l'échange
+                        if (solution->Z > old_Z)
+                        {
+                            improved = 1;
+                            break; // Sortir de la boucle for pour recommencer l'exploration
+                        }
+                        else
+                        {
+                            // Annuler l'échange si la solution ne s'est pas améliorée
+                            solution->x[i] = 1 - solution->x[i];
+                            solution->x[j] = 1 - solution->x[j];
+                            solution->Z = old_Z;
+                        }
+                    }
+                    else
+                    {
+                        // Annuler l'échange si la solution devient invalide
+                        solution->x[i] = 1 - solution->x[i];
+                        solution->x[j] = 1 - solution->x[j];
+                    }
+                }
+            }
+            if (improved)
+                break; // Sortir de la boucle for externe si une amélioration est trouvée
+        }
+    }
+}
+
+
+void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackInstance *instance) {
+    int neighborhood = 1; // 1 = flip_1, 2 = swap
+    int improved;
+
+    do {
+        improved = 0;
+        if (neighborhood == 1) {
+            int old_Z = solution->Z;
+            local_search_1_flip(solution, instance);
+            if (solution->Z > old_Z) {
+                improved = 1;
+                neighborhood = 1; // Revenir au premier voisinage
+            } else {
+                neighborhood = 2; // Passer à swap
+            }
+        } else if (neighborhood == 2) {
+            int old_Z = solution->Z;
+            local_search_swap(solution, instance);
+            if (solution->Z > old_Z) {
+                improved = 1;
+                neighborhood = 1; // Revenir à flip_1
+            }
+        }
+    } while (improved);
 }

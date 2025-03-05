@@ -66,3 +66,45 @@ int compare_knapsack_instance(void *context, const void *a, const void *b);
  *       sans chercher à optimiser globalement la solution.
  */
 KnapsackSolution *greedy_initial_solution(const KnapsackInstance *instance);
+
+
+/**
+ * @brief Applique la recherche locale 1-flip pour améliorer la solution actuelle.
+ *
+ * Cette fonction effectue un flip (ajout ou suppression d'un objet) pour chaque objet et
+ * met à jour la solution si cela améliore la faisabilité et le profit.
+ *
+ * @param solution La solution actuelle à améliorer.
+ * @param instance L'instance du problème de sac à dos, contenant les poids et les profits des objets.
+ */
+void local_search_1_flip(KnapsackSolution *solution, const KnapsackInstance *instance);
+
+/**
+ * @brief Applique la recherche locale par échange pour améliorer la solution actuelle.
+ *
+ * Cette fonction effectue un échange entre deux objets sélectionnés et non sélectionnés
+ * et met à jour la solution si cela améliore la faisabilité et le profit.
+ *
+ * @param solution La solution actuelle à améliorer.
+ * @param instance L'instance du problème de sac à dos, contenant les poids et les profits des objets.
+ */
+void local_search_swap(KnapsackSolution *solution, const KnapsackInstance *instance);
+
+/**
+ * @brief Applique la méthode de descente de voisinage variable (VND) pour améliorer une solution du problème du sac à dos.
+ *
+ * La descente de voisinage variable (VND) utilise deux stratégies de recherche locale :
+ * 1. `local_search_1_flip` : Modifie l'état individuel des objets (ajout/retrait) pour améliorer la solution.
+ * 2. `local_search_swap` : Échange deux objets (un inclus, l'autre exclu) pour optimiser la solution.
+ *
+ * La fonction commence avec la recherche `flip_1`. Lorsqu'elle atteint un optimum local, elle passe à `swap`.
+ * Si `swap` améliore la solution, elle retourne à `flip_1` pour exploiter les nouvelles opportunités.
+ * Le processus continue jusqu'à ce qu'aucune amélioration ne soit possible avec les deux voisinages.
+ *
+ * @param solution Pointeur vers la solution actuelle du problème du sac à dos.
+ * @param instance Pointeur vers l'instance du problème du sac à dos contenant les données (poids, valeurs, capacité, etc.).
+ *
+ * @note Cette méthode garantit une amélioration progressive de la solution, mais ne garantit pas d'atteindre l'optimum global.
+ * @note La solution initiale doit être définie avant d'appeler cette fonction.
+ */
+void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackInstance *instance);
