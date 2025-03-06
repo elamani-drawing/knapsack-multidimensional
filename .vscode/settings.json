@@ -3,7 +3,8 @@
         "knapsack.h": "c",
         "stdlib.h": "c",
         "heuristique.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "benchmark.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

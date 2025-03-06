@@ -1,3 +1,6 @@
+#ifndef HEURISTIQUE_H
+#define HEURISTIQUE_H
+
 #include "knapsack.h"
 #include <time.h>
 
@@ -150,3 +153,6 @@ void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, i
  * @note La fonction `random_flip` est utilisée comme stratégie de perturbation.
  */
 void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k);
+
+
+#endif // HEURISTIQUE_H
