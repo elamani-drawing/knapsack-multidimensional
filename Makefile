@@ -5,7 +5,7 @@ OBJ = $(SRC:.c=.o)
 EXEC = sadm_solver
 BENCH_EXEC = sadm_bench
 
-CFLAGS = -Wall -Wextra -O2 -fpermissive
+CFLAGS = -Wall -Wextra -O2
 
 # Règle par défaut
 all: $(EXEC)
