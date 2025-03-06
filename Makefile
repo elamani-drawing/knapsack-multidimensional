@@ -45,4 +45,4 @@ bench: $(BENCH_EXEC)
 
 # Exécuter le benchmark
 benchr: $(BENCH_EXEC)
-	$(BENCH_EXEC)  .\Instances_MKP\100M30_11.txt 2
+	$(BENCH_EXEC)  .\Instances_MKP\500M30_21.txt 2
