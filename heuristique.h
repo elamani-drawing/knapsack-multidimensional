@@ -38,11 +38,9 @@ KnapsackSolution *random_initial_solution(const KnapsackInstance *instance);
  * @brief Fonction de comparaison utilisée pour trier les objets du problème du sac à dos en fonction du ratio profit/poids,
  *        en tenant compte de toutes les contraintes.
  *
- * Cette fonction est utilisée par `qsort_s` pour trier les indices des objets du sac à dos dans l'ordre décroissant de leur ratio
+ * Cette fonction est utilisée par `qsort` pour trier les indices des objets du sac à dos dans l'ordre décroissant de leur ratio
  * profit/poids. Le ratio est calculé en prenant en compte tous les poids normalisés par les capacités des différentes contraintes.
  *
- * @param context Pointeur vers l'instance du problème du sac à dos (contenant les données de l'instance comme les poids,
- *                les profits et les capacités des contraintes).
  * @param a Pointeur vers l'indice du premier objet à comparer.
  * @param b Pointeur vers l'indice du deuxième objet à comparer.
  *
@@ -50,7 +48,8 @@ KnapsackSolution *random_initial_solution(const KnapsackInstance *instance);
  *         un entier positif si le ratio de l'objet a est plus petit que celui de l'objet b,
  *         et zéro si les deux objets ont le même ratio.
  */
-int compare_knapsack_instance(void *context, const void *a, const void *b);
+
+ int compare_knapsack_instance(const void *a, const void *b) ;
 
 /**
  * @brief Fonction pour générer une solution initiale pour le problème du sac à dos en utilisant une approche gloutonne.

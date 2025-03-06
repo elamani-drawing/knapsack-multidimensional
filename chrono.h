@@ -26,7 +26,12 @@ extern volatile sig_atomic_t timeout_flag;
 /**
  * @brief Stocke le temps de départ de la mesure.
  */
-extern LARGE_INTEGER start_time; 
+ #ifdef _WIN32
+ extern LARGE_INTEGER start_time;
+ #else
+ extern struct timespec start_time;
+ #endif // _WIN32
+ 
 
 /**
  * @brief Type générique représentant une valeur de temps selon le système d'exploitation.

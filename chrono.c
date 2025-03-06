@@ -2,7 +2,16 @@
 
 jmp_buf env;
 volatile sig_atomic_t timeout_flag = 0;
-LARGE_INTEGER start_time;
+
+/**
+ * @brief Stocke le temps de départ de la mesure.
+ */
+ #ifdef _WIN32
+ LARGE_INTEGER start_time;
+ #else
+ struct timespec start_time;
+ #endif // _WIN32
+ 
 
 TimeValue get_current_time() {
     TimeValue time;

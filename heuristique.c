@@ -1,5 +1,6 @@
 #include "heuristique.h"
 
+static const KnapsackInstance *q_sort_global_instance = NULL;
 
 KnapsackSolution *random_initial_solution(const KnapsackInstance *instance)
 {
@@ -61,9 +62,9 @@ void random_construction(KnapsackSolution *solution, const KnapsackInstance *ins
     evaluate_solution(solution, instance);
 }
 
-int compare_knapsack_instance(void *context, const void *a, const void *b)
-{
-    const KnapsackInstance *instance = (const KnapsackInstance *)context;
+int compare_knapsack_instance(const void *a, const void *b) {
+    const KnapsackInstance *instance = q_sort_global_instance;
+
     int index_a = *(int *)a;
     int index_b = *(int *)b;
 
@@ -110,8 +111,9 @@ KnapsackSolution *greedy_initial_solution(const KnapsackInstance *instance)
     }
 
     // Trie les objets par ratio profit/poids décroissant
-    qsort_s(indices, instance->n, sizeof(int), compare_knapsack_instance, (void *)instance);
-
+    // Définir la variable globale avant d'appeler qsort
+    q_sort_global_instance = instance;
+    qsort(indices, instance->n, sizeof(int), compare_knapsack_instance);
     // Copier les capacités pour ne pas modifier l'instance originale
     int *remaining_capacities = copy_capacities(instance);
     ;
