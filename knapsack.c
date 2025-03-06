@@ -239,3 +239,32 @@ void free_solution(KnapsackSolution *solution)
     free(solution->x);
     free(solution);
 }
+
+void save_solution_to_file(const KnapsackSolution *solution, const KnapsackInstance *instance, const char *filename) {
+    // Ouvrir le fichier en mode écriture
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        perror("Erreur lors de l'ouverture du fichier");
+        return;
+    }
+
+    // 1ère ligne : Valeur de la solution et nombre d'objets sélectionnés
+    int selected_count = 0;
+    for (int i = 0; i < instance->n; i++) {
+        if (solution->x[i] == 1) {
+            selected_count++;
+        }
+    }
+    fprintf(file, "%d %d\n", solution->Z, selected_count);
+
+    // 2ème ligne : Liste des indices des objets sélectionnés
+    for (int i = 0; i < instance->n; i++) {
+        if (solution->x[i] == 1) {
+            fprintf(file, "%d ", i);
+        }
+    }
+    fprintf(file, "\n");
+
+    // Fermer le fichier
+    fclose(file);
+}

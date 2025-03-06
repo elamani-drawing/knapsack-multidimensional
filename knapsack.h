@@ -162,4 +162,18 @@ void print_solution_index(const KnapsackSolution *solution, int n);
  */
 void free_solution(KnapsackSolution *solution);
 
+
+/**
+ * @brief Sauvegarde la meilleure solution dans un fichier texte au format spécifié.
+ *
+ * Le fichier contient :
+ * - 1ère ligne : La valeur de la solution (fonction objective) et le nombre d'objets sélectionnés.
+ * - 2ème ligne : La liste des indices des objets sélectionnés, séparés par un espace.
+ *
+ * @param solution Pointeur vers la structure `KnapsackSolution` représentant la solution à sauvegarder.
+ * @param instance Pointeur vers la structure `KnapsackInstance` contenant les informations sur les objets.
+ * @param filename Nom du fichier où la solution sera sauvegardée.
+ */
+ void save_solution_to_file(const KnapsackSolution *solution, const KnapsackInstance *instance, const char *filename);
+
 #endif // KNAPSACK_H

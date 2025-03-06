@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
 
     KnapsackInstance ksInstance;
     read_knapsack_file(argv[1], &ksInstance);
-    // KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 100, 500, 0.05);
-    KnapsackSolution *ksSolution = hybrid_GA_VNS(&ksInstance, 100, 500, 0.05, 100, 2);
+    KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 100, 500, 0.05);
+    // KnapsackSolution *ksSolution = hybrid_GA_VNS(&ksInstance, 100, 500, 0.05, 100, 2);
     // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // KnapsackSolution *ksSolution = greedy_initial_solution(&ksInstance);
 
@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     print_solution(ksSolution, &ksInstance);
     print_solution_index(ksSolution, ksInstance.n);
 
+    save_solution_to_file(ksSolution, &ksInstance, "solution.txt");
     // Libére la mémoire
     free_solution(ksSolution);
     free_knapsack_instance(&ksInstance);

@@ -134,9 +134,8 @@ KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int popula
             best = &population[i];
         }
     }
-    
     // Vérifie que best->solution est initialisé
-    if (best->solution == NULL) {
+    if (best == NULL || best->solution == NULL)  {
         // Gestion d'erreur : best->solution n'est pas initialisé
         free_population(population, population_size);
         return NULL;
@@ -201,6 +200,7 @@ KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population
     }
 
     // Retour de la meilleure solution trouvée
+    // Individual *best_individual =  init_individual(instance->n);
     Individual *best_individual = &population[0];
     for (int i = 0; i < population_size; i++) {
         if (population[i].fitness > best_individual->fitness) {
@@ -208,6 +208,12 @@ KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population
         }
     }
 
+    // Vérifie que best_individual->solution est initialisé
+    if (best_individual == NULL || best_individual->solution == NULL) {
+        // Gestion d'erreur : best->solution n'est pas initialisé
+        free_population(population, population_size);
+        return NULL;
+    }
     KnapsackSolution *best_solution = init_solution(instance->n);
     copy_knapsack_solution(best_solution, best_individual->solution, instance->n);
     
