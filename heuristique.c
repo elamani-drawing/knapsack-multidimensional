@@ -286,9 +286,9 @@ void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackIns
 }
 
 
-void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, int k) {
+void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, int k_perturbation) {
 
-    for (int p = 0; p < k; p++) {
+    for (int p = 0; p < k_perturbation; p++) {
         // Choisir un objet aléatoire
         int i = rand() % instance->n;
 
@@ -303,7 +303,7 @@ void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, i
     }
 }
 
-void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k, int time_limit) {
+void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k_perturbation, int time_limit) {
 
     if (time_limit > 0) {
         timeout_flag = 0;
@@ -328,7 +328,7 @@ void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInst
         }
 
         // Phase de perturbation
-        random_flip(solution, instance, k);
+        random_flip(solution, instance, k_perturbation);
 
         // Phase de VND après perturbation
         variable_neighborhood_descent(solution, instance, 0);

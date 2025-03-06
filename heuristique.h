@@ -122,7 +122,7 @@ void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackIns
  *
  * @param solution Pointeur vers la solution du problème du sac à dos. La solution sera modifiée directement.
  * @param instance Pointeur vers l'instance du problème du sac à dos, contenant les informations sur les objets (poids, valeur) et la capacité du sac.
- * @param k Le nombre d'objets à perturber. Cette valeur détermine combien d'objets seront sélectionnés et dont l'état sera inversé.
+ * @param k_perturbation Le nombre d'objets à perturber. Cette valeur détermine combien d'objets seront sélectionnés et dont l'état sera inversé.
  *
  * @note Cette fonction utilise un générateur de nombres aléatoires pour sélectionner les objets à perturber. Il est nécessaire d'initialiser le générateur de nombres aléatoires en appelant `srand(time(NULL))` avant l'utilisation de cette fonction, si ce n'est pas déjà fait ailleurs dans le programme.
  *
@@ -130,7 +130,7 @@ void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackIns
  * KnapsackSolution solution = init_solution(instance->n);
  * random_flip(&solution, &instance, 5); // Perturber aléatoirement 5 objets dans la solution
  */
-void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, int k);
+void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, int k_perturbation);
 
 
 /**
@@ -143,7 +143,7 @@ void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, i
  *        Cette solution sera modifiée au cours de l'exécution.
  * @param instance Pointeur vers l'instance du problème contenant les objets et les contraintes.
  * @param max_iterations Nombre maximum d'itérations du VNS.
- * @param k Intensité de la perturbation (nombre d'objets modifiés lors de la phase de perturbation).
+ * @param k_perturbation Intensité de la perturbation (nombre d'objets modifiés lors de la phase de perturbation).
  * @param time_limit La limite de temps en secondes pour l'exécution de l'algorithme (0 pour illimité).
  *
  * @details
@@ -155,7 +155,7 @@ void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, i
  * @note La fonction `variable_neighborhood_descent` est utilisée comme stratégie de recherche locale.
  * @note La fonction `random_flip` est utilisée comme stratégie de perturbation.
  */
-void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k, int time_limit);
+void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k_perturbation, int time_limit);
 
 
 #endif // HEURISTIQUE_H

@@ -24,14 +24,14 @@ ExperimentalResultsKSM run_experiments(const KnapsackInstance *instance, Knapsac
 
     // Mesurer le temps CPU et la valeur après VND
     start_time = get_cpu_time();
-    variable_neighborhood_descent(initial_solution, instance);
+    variable_neighborhood_descent(initial_solution, instance, 0);
     end_time = get_cpu_time();
     results.vnd_value = initial_solution->Z;
     results.vnd_time = end_time - start_time;
 
     // Mesurer le temps CPU et la valeur après VNS
     start_time = get_cpu_time();
-    variable_neighborhood_search(initial_solution, instance, 100, 2);
+    variable_neighborhood_search(initial_solution, instance, 100, 2, 0);
     end_time = get_cpu_time();
     results.vns_value = initial_solution->Z;
     results.vns_time = end_time - start_time;

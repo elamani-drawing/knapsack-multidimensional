@@ -11,9 +11,10 @@ int main(int argc, char *argv[])
 
     KnapsackInstance ksInstance;
     read_knapsack_file(argv[1], &ksInstance);
-    // KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 500, 500, 0.05, 3);
+    KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 5000, 5000, 0.05, 3);
     // KnapsackSolution *ksSolution = hybrid_GA_VNS(&ksInstance, 100, 100, 0.05, 100, 2,3);
-    KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
+
+    // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // KnapsackSolution *ksSolution = greedy_initial_solution(&ksInstance);
 
     // printf("Avant flip : Z = %d\n", ksSolution->Z);
@@ -21,7 +22,7 @@ int main(int argc, char *argv[])
     // local_search_swap(ksSolution, &ksInstance);
 
     // printf("Avant neighborhood descent : Z = %d\n", ksSolution->Z);
-    variable_neighborhood_descent(ksSolution, &ksInstance, 1);
+    // variable_neighborhood_descent(ksSolution, &ksInstance, 1);
 
     // // Appliquer la recherche à voisinage variable (VNS)
     // printf("Avant VNS descent : Z = %d\n", ksSolution->Z);
