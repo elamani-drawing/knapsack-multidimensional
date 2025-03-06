@@ -88,7 +88,7 @@ KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int popula
     
     // Initialisation de la population
     for (int i = 0; i < population_size; i++) {
-        population[i].solution = init_solution(instance->n);
+        population[i].solution = random_initial_solution(instance);
         evaluate_solution(population[i].solution, instance);
         population[i].fitness = population[i].solution->Z;
     }
@@ -148,5 +148,63 @@ KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int popula
     // Libère la mémoire de la population
     free_population(population, population_size); 
     
+    return best_solution;
+}
+
+KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k) {
+    // Initialisation de la population
+    Individual *population = malloc(population_size * sizeof(Individual));
+    for (int i = 0; i < population_size; i++) {
+        population[i].solution = random_initial_solution(instance);
+        population[i].fitness = population[i].solution->Z;
+    }
+
+    // Boucle principale sur les générations
+    for (int gen = 0; gen < generations; gen++) {
+        // 3. Sélection, croisement et mutation
+        Individual *new_population = malloc(population_size * sizeof(Individual));
+        for (int i = 0; i < population_size; i++) {
+            // Sélection par tournoi
+            Individual *parent1 = tournament_selection(population, population_size);
+            Individual *parent2 = tournament_selection(population, population_size);
+
+            // Croisement
+            KnapsackSolution *child = init_solution(instance->n);
+            crossover(parent1->solution, parent2->solution, child, instance);
+
+            // Mutation
+            mutate(child, instance, mutation_rate);
+
+            // Évaluation de l'enfant
+            evaluate_solution(child, instance);
+
+            // Ajout à la nouvelle population
+            new_population[i].solution = child;
+            new_population[i].fitness = child->Z;
+        }
+
+        // Application du VNS sur chaque individu de la nouvelle population
+        for (int i = 0; i < population_size; i++) {
+            variable_neighborhood_search(new_population[i].solution, instance, vns_iterations, k);
+            evaluate_solution(new_population[i].solution, instance); // Recalcul de la fitness après VNS
+        }
+
+        // Remplacement de l'ancienne population par la nouvelle
+        free_population(population, population_size);
+        population = new_population;
+    }
+
+    // Retour de la meilleure solution trouvée
+    Individual *best_individual = &population[0];
+    for (int i = 0; i < population_size; i++) {
+        if (population[i].fitness > best_individual->fitness) {
+            best_individual = &population[i];
+        }
+    }
+
+    KnapsackSolution *best_solution = init_solution(instance->n);
+    copy_knapsack_solution(best_solution, best_individual->solution, instance->n);
+    
+    free_population(population, population_size);
     return best_solution;
 }

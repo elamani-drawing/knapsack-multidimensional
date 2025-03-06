@@ -95,4 +95,26 @@ void free_population(Individual *population, int population_size) ;
  KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate);
  
 
+ /**
+ * @brief Algorithme hybride combinant un Génétique Algorithm (GA) et Variable Neighborhood Search (VNS) 
+ * pour résoudre le problème du sac à dos (Knapsack).
+ *
+ * Cet algorithme combine la recherche par génétique avec la recherche locale (VNS) pour optimiser
+ * la solution du problème du sac à dos. Il utilise une population d'individus, effectue des croisements
+ * et des mutations, puis applique un VNS sur chaque solution de la population pour améliorer les résultats.
+ * Le processus se répète sur plusieurs générations.
+ *
+ * @param instance Pointeur vers une instance du problème de sac à dos. Cela contient les paramètres nécessaires 
+ *                 au problème (par exemple, les poids, les valeurs, la capacité, etc.).
+ * @param population_size Taille de la population d'individus dans l'algorithme génétique.
+ * @param generations Nombre de générations à exécuter pour l'algorithme génétique.
+ * @param mutation_rate Taux de mutation utilisé pour les individus.
+ * @param vns_iterations Nombre d'itérations du VNS pour chaque solution après croisement et mutation.
+ * @param k Nombre de voisinages à explorer lors de l'application du VNS.
+ *
+ * @return KnapsackSolution* Pointeur vers la meilleure solution trouvée après toutes les générations.
+ *         Cette solution représente la configuration des éléments dans le sac à dos qui maximise la valeur.
+ */
+KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k);
+
 #endif //GENETIC_H
