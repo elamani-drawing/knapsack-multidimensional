@@ -154,6 +154,12 @@ KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int popula
 KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k) {
     // Initialisation de la population
     Individual *population = malloc(population_size * sizeof(Individual));
+    if (!population)
+    {
+        perror("Erreur d'allocation mémoire pour population (hybrid_GA_VNS)");
+        return NULL;
+    }
+    
     for (int i = 0; i < population_size; i++) {
         population[i].solution = random_initial_solution(instance);
         population[i].fitness = population[i].solution->Z;
