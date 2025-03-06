@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "heuristique.h"
+#include "genetic.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
 
     KnapsackInstance ksInstance;
     read_knapsack_file(argv[1], &ksInstance);
-    
-    KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
+    KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 100, 500, 0.05);
+    // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // KnapsackSolution *ksSolution = greedy_initial_solution(&ksInstance);
 
     // printf("Avant flip : Z = %d\n", ksSolution->Z);
@@ -24,11 +24,11 @@ int main(int argc, char *argv[])
     // printf("Avant neighborhood descent : Z = %d\n", ksSolution->Z);
     // variable_neighborhood_descent(ksSolution, &ksInstance);
 
-    // Appliquer la recherche à voisinage variable (VNS)
-    printf("Avant VNS descent : Z = %d\n", ksSolution->Z);
-    int max_iterations = 100; // Nombre maximum d'itérations
-    int k = 2; // Nombre d'objets à perturber
-    variable_neighborhood_search(ksSolution, &ksInstance, max_iterations, k);
+    // // Appliquer la recherche à voisinage variable (VNS)
+    // printf("Avant VNS descent : Z = %d\n", ksSolution->Z);
+    // int max_iterations = 100; // Nombre maximum d'itérations
+    // int k = 2; // Nombre d'objets à perturber
+    // variable_neighborhood_search(ksSolution, &ksInstance, max_iterations, k);
 
     print_solution(ksSolution, &ksInstance);
     print_solution_index(ksSolution, ksInstance.n);

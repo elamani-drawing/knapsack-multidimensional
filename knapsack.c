@@ -203,7 +203,7 @@ void print_solution(const KnapsackSolution *solution, const KnapsackInstance *in
     for (int i = 0; i < instance->n; i++)
     {
         if (solution->x[i] == 1)
-        {
+        {  
             printf("%d ", instance->profits[i]);
             has_objects = 1;
         }
