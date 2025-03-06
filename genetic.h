@@ -2,7 +2,7 @@
 #define GENETIC_H
 
 #include "heuristique.h"
-
+#include "chrono.h"
 
 
 /**

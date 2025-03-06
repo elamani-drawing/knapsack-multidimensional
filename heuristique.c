@@ -1,7 +1,5 @@
 #include "heuristique.h"
 
-#include <stdlib.h>
-#include <time.h>
 
 KnapsackSolution *random_initial_solution(const KnapsackInstance *instance)
 {
@@ -251,7 +249,15 @@ void local_search_swap(KnapsackSolution *solution, const KnapsackInstance *insta
 }
 
 
-void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackInstance *instance) {
+void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackInstance *instance, int time_limit)  {
+    if (time_limit > 0) {
+        timeout_flag = 0;
+        start_time = get_current_time();
+        if (setjmp(env) != 0) {
+            printf("Temps écoulé ! Arrêt de l'algorithme (variable_neighborhood_descent).\n");
+            return;  // Sortir de la fonction si le temps est écoulé
+        }
+    }
     int neighborhood = 1; // 1 = flip_1, 2 = swap
     int improved;
 
@@ -274,6 +280,8 @@ void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackIns
                 neighborhood = 1; // Revenir à flip_1
             }
         }
+        // Vérification du timeout à chaque itération
+        if (time_limit > 0) check_timeout(start_time, time_limit);
     } while (improved);
 }
 
@@ -295,7 +303,16 @@ void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, i
     }
 }
 
-void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k) {
+void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k, int time_limit) {
+
+    if (time_limit > 0) {
+        timeout_flag = 0;
+        start_time = get_current_time();
+        if (setjmp(env) != 0) {
+            printf("Temps écoulé ! Arrêt de l'algorithme (variable_neighborhood_search).\n");
+            return;  // Sortir de la fonction si le temps est écoulé
+        }
+    }
     int iteration = 0;
 
     // Initialiser la meilleure solution avec init_solution
@@ -303,7 +320,7 @@ void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInst
 
     while (iteration < max_iterations) {
         // Phase de VND
-        variable_neighborhood_descent(solution, instance);
+        variable_neighborhood_descent(solution, instance, 0);
 
         // Sauvegarder la meilleure solution trouvée (copie profonde)
         if (solution->Z > best_solution->Z) {
@@ -314,7 +331,7 @@ void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInst
         random_flip(solution, instance, k);
 
         // Phase de VND après perturbation
-        variable_neighborhood_descent(solution, instance);
+        variable_neighborhood_descent(solution, instance, 0);
 
         // Si la solution après perturbation est meilleure, la conserver
         if (solution->Z > best_solution->Z) {
@@ -325,6 +342,8 @@ void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInst
         }
 
         iteration++;
+        // Vérification du timeout à chaque itération
+        if (time_limit > 0) check_timeout(start_time, time_limit);
     }
 
     // Libérer la mémoire de la meilleure solution

@@ -1,5 +1,4 @@
 #include "genetic.h"
-#include "chrono.h"
 
 Individual *init_individual(int n)
 {
@@ -203,7 +202,7 @@ KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population
         }
 
         for (int i = 0; i < population_size; i++) {
-            variable_neighborhood_search(new_population[i].solution, instance, vns_iterations, k);
+            variable_neighborhood_search(new_population[i].solution, instance, vns_iterations, k, 0);
             evaluate_solution(new_population[i].solution, instance);
 
             // Vérification du timeout à chaque itération

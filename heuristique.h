@@ -2,6 +2,7 @@
 #define HEURISTIQUE_H
 
 #include "knapsack.h"
+#include "chrono.h"
 #include <time.h>
 
 /**
@@ -106,11 +107,12 @@ void local_search_swap(KnapsackSolution *solution, const KnapsackInstance *insta
  *
  * @param solution Pointeur vers la solution actuelle du problème du sac à dos.
  * @param instance Pointeur vers l'instance du problème du sac à dos contenant les données (poids, valeurs, capacité, etc.).
+ * @param time_limit La limite de temps en secondes pour l'exécution de l'algorithme (0 pour illimité).
  *
  * @note Cette méthode garantit une amélioration progressive de la solution, mais ne garantit pas d'atteindre l'optimum global.
  * @note La solution initiale doit être définie avant d'appeler cette fonction.
  */
-void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackInstance *instance);
+void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackInstance *instance, int time_limit);
 
 /**
  * @brief Effectue une perturbation aléatoire sur une solution en inversant l'état de k objets choisis au hasard dans la solution.
@@ -142,6 +144,7 @@ void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, i
  * @param instance Pointeur vers l'instance du problème contenant les objets et les contraintes.
  * @param max_iterations Nombre maximum d'itérations du VNS.
  * @param k Intensité de la perturbation (nombre d'objets modifiés lors de la phase de perturbation).
+ * @param time_limit La limite de temps en secondes pour l'exécution de l'algorithme (0 pour illimité).
  *
  * @details
  * - À chaque itération, l'algorithme commence par appliquer la **VND** pour améliorer localement la solution.
@@ -152,7 +155,7 @@ void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, i
  * @note La fonction `variable_neighborhood_descent` est utilisée comme stratégie de recherche locale.
  * @note La fonction `random_flip` est utilisée comme stratégie de perturbation.
  */
-void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k);
+void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k, int time_limit);
 
 
 #endif // HEURISTIQUE_H
