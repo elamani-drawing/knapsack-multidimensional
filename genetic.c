@@ -1,35 +1,5 @@
 #include "genetic.h"
-#include <signal.h>
-#include <unistd.h>
-#include <windows.h>  
-#include <setjmp.h>
-
-
-jmp_buf env;
-volatile sig_atomic_t timeout_flag = 0;
-
-LARGE_INTEGER get_current_time() {
-    LARGE_INTEGER time;
-    QueryPerformanceCounter(&time);
-    return time;
-}
-
-double get_elapsed_time(LARGE_INTEGER start_time, LARGE_INTEGER end_time) {
-    LARGE_INTEGER frequency;
-    QueryPerformanceFrequency(&frequency);
-    return (double)(end_time.QuadPart - start_time.QuadPart) / frequency.QuadPart;
-}
-
-void check_timeout(LARGE_INTEGER start_time, double time_limit_seconds) {
-    LARGE_INTEGER current_time = get_current_time();
-    double elapsed_time = get_elapsed_time(start_time, current_time);
-    printf("temps ecouler:%0.f\n", elapsed_time);
-    if (elapsed_time > time_limit_seconds) {
-        timeout_flag = 1;
-        printf("--fin");
-        longjmp(env, 1);  // Arrêter l'algorithme
-    }
-}
+#include "chrono.h"
 
 Individual *init_individual(int n)
 {
@@ -107,7 +77,7 @@ void mutate(KnapsackSolution *solution, const KnapsackInstance *instance, double
 }
 
 KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int time_limit) {
-    LARGE_INTEGER start_time;
+    // LARGE_INTEGER start_time;
 
     if (time_limit > 0) {
         timeout_flag = 0;
@@ -185,7 +155,7 @@ cleanup:
 
 
 KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k, int time_limit) {
-    LARGE_INTEGER start_time;
+    // LARGE_INTEGER start_time;
 
     if (time_limit > 0) {
         timeout_flag = 0;

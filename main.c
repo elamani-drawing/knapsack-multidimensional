@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
 
     KnapsackInstance ksInstance;
     read_knapsack_file(argv[1], &ksInstance);
-    KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 500, 500, 0.05, 0);
-    // KnapsackSolution *ksSolution = hybrid_GA_VNS(&ksInstance, 100, 100, 0.05, 100, 2,1);
+    KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 500, 500, 0.05, 3);
+    KnapsackSolution *ksSolution = hybrid_GA_VNS(&ksInstance, 100, 100, 0.05, 100, 2,3);
     // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // KnapsackSolution *ksSolution = greedy_initial_solution(&ksInstance);
 

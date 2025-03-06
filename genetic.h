@@ -3,6 +3,8 @@
 
 #include "heuristique.h"
 
+
+
 /**
  * Représente un individu dans la population de l'algorithme génétique.
  * Un individu contient une solution au problème du sac à dos ainsi qu'une valeur de fitness associée à cette solution.

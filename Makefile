@@ -1,6 +1,6 @@
 CC = gcc
 
-SRC = knapsack.c heuristique.c genetic.c
+SRC = knapsack.c heuristique.c genetic.c chrono.c
 OBJ = $(SRC:.c=.o)
 EXEC = sadm_solver
 BENCH_EXEC = sadm_bench
