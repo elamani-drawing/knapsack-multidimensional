@@ -3,7 +3,6 @@
 
 #include "heuristique.h"
 
-
 /**
  * Représente un individu dans la population de l'algorithme génétique.
  * Un individu contient une solution au problème du sac à dos ainsi qu'une valeur de fitness associée à cette solution.
@@ -90,9 +89,10 @@ void free_population(Individual *population, int population_size) ;
   * @param population_size La taille de la population.
   * @param generations Le nombre de générations à exécuter.
   * @param mutation_rate Le taux de mutation.
-  * @return La meilleure solution trouvée à la fin des générations.
+  * @param time_limit La limite de temps en secondes pour l'exécution de l'algorithme (0 pour illimité).
+  * @return La meilleure solution trouvée à la fin des générations ou avant expiration du temps imparti.
   */
- KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate);
+ KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int time_limit);
  
 
  /**
@@ -111,10 +111,9 @@ void free_population(Individual *population, int population_size) ;
  * @param mutation_rate Taux de mutation utilisé pour les individus.
  * @param vns_iterations Nombre d'itérations du VNS pour chaque solution après croisement et mutation.
  * @param k Nombre de voisinages à explorer lors de l'application du VNS.
- *
- * @return KnapsackSolution* Pointeur vers la meilleure solution trouvée après toutes les générations.
- *         Cette solution représente la configuration des éléments dans le sac à dos qui maximise la valeur.
+ * @param time_limit La limite de temps en secondes pour l'exécution de l'algorithme (0 pour illimité).
+ * @return KnapsackSolution* Pointeur vers la meilleure solution trouvée à la fin des générations ou avant expiration du temps imparti.
  */
-KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k);
+KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k, int time_limit);
 
 #endif //GENETIC_H

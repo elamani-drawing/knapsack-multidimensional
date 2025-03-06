@@ -1,6 +1,35 @@
 #include "genetic.h"
+#include <signal.h>
+#include <unistd.h>
+#include <windows.h>  
+#include <setjmp.h>
 
-#include "genetic.h"
+
+jmp_buf env;
+volatile sig_atomic_t timeout_flag = 0;
+
+LARGE_INTEGER get_current_time() {
+    LARGE_INTEGER time;
+    QueryPerformanceCounter(&time);
+    return time;
+}
+
+double get_elapsed_time(LARGE_INTEGER start_time, LARGE_INTEGER end_time) {
+    LARGE_INTEGER frequency;
+    QueryPerformanceFrequency(&frequency);
+    return (double)(end_time.QuadPart - start_time.QuadPart) / frequency.QuadPart;
+}
+
+void check_timeout(LARGE_INTEGER start_time, double time_limit_seconds) {
+    LARGE_INTEGER current_time = get_current_time();
+    double elapsed_time = get_elapsed_time(start_time, current_time);
+    printf("temps ecouler:%0.f\n", elapsed_time);
+    if (elapsed_time > time_limit_seconds) {
+        timeout_flag = 1;
+        printf("--fin");
+        longjmp(env, 1);  // Arrêter l'algorithme
+    }
+}
 
 Individual *init_individual(int n)
 {
@@ -77,11 +106,21 @@ void mutate(KnapsackSolution *solution, const KnapsackInstance *instance, double
     }
 }
 
-// Fonction pour exécuter l'algorithme génétique
-KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate) {
-    Individual *population = malloc(population_size * sizeof(Individual));
-    if (!population)
-    {
+KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int time_limit) {
+    LARGE_INTEGER start_time;
+
+    if (time_limit > 0) {
+        timeout_flag = 0;
+        start_time = get_current_time();
+        if (setjmp(env) != 0) {
+            printf("Temps écoulé ! Arrêt de l'algorithme (genetic_algorithm).");
+            goto cleanup;
+        }
+    }
+
+    static Individual *population = NULL;
+    population = malloc(population_size * sizeof(Individual));
+    if (!population) {
         perror("Erreur d'allocation mémoire pour population (genetic_algorithm)");
         return NULL;
     }
@@ -96,127 +135,131 @@ KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int popula
     for (int gen = 0; gen < generations; gen++) {
         Individual *new_population = malloc(population_size * sizeof(Individual));
         if (!new_population) {
-            // Libère la mémoire de la population
-            free_population(population, population_size); 
+            free_population(population, population_size);
             return NULL;
         }
         
         for (int i = 0; i < population_size; i++) {
-            // Sélection
             Individual *parent1 = tournament_selection(population, population_size);
             Individual *parent2 = tournament_selection(population, population_size);
             
-            // Croisement
             new_population[i].solution = init_solution(instance->n);
             crossover(parent1->solution, parent2->solution, new_population[i].solution, instance);
-            
-            // Mutation
             mutate(new_population[i].solution, instance, mutation_rate);
-            
-            // Évaluation
             evaluate_solution(new_population[i].solution, instance);
             new_population[i].fitness = new_population[i].solution->Z;
+            
+            if (time_limit > 0) check_timeout(start_time, time_limit);
         }
         
-        // Remplacement de l'ancienne population
         for (int i = 0; i < population_size; i++) {
-            free_individual(&population[i]); 
+            free_individual(&population[i]);
             population[i] = new_population[i];
         }
         free(new_population);
     }
-    
-    // Retourne la meilleure solution trouvée
-    // Individual *best =  init_individual(instance->n);
-    Individual *best = &population[0];
-    for (int i = 0; i < population_size; i++) {
-        if (population[i].fitness > best->fitness) {
-            best = &population[i];
+
+cleanup:
+    if (population) {
+        Individual *best = &population[0];
+        for (int i = 1; i < population_size; i++) {
+            if (population[i].fitness > best->fitness) {
+                best = &population[i];
+            }
         }
-    }
-    // Vérifie que best->solution est initialisé
-    if (best == NULL || best->solution == NULL)  {
-        // Gestion d'erreur : best->solution n'est pas initialisé
+        if (best == NULL || best->solution == NULL) {
+            free_population(population, population_size);
+            return NULL;
+        }
+        
+        KnapsackSolution *best_solution = init_solution(instance->n);
+        copy_knapsack_solution(best_solution, best->solution, instance->n);
+        
         free_population(population, population_size);
-        return NULL;
+        return best_solution;
     }
     
-    KnapsackSolution *best_solution = init_solution(instance->n);
-    copy_knapsack_solution(best_solution, best->solution, instance->n);
-    
-    // Libère la mémoire de la population
-    free_population(population, population_size); 
-    
-    return best_solution;
+    return NULL;
 }
 
-KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k) {
-    // Initialisation de la population
-    Individual *population = malloc(population_size * sizeof(Individual));
-    if (!population)
-    {
+
+
+KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k, int time_limit) {
+    LARGE_INTEGER start_time;
+
+    if (time_limit > 0) {
+        timeout_flag = 0;
+        start_time = get_current_time();
+        if (setjmp(env) != 0) {
+            printf("Temps écoulé ! Arrêt de l'algorithme (hybrid_GA_VNS).");
+            goto cleanup;
+        }
+    }
+
+    static Individual *population = NULL; 
+    population = malloc(population_size * sizeof(Individual));
+    if (!population) {
         perror("Erreur d'allocation mémoire pour population (hybrid_GA_VNS)");
         return NULL;
     }
-    
+
     for (int i = 0; i < population_size; i++) {
         population[i].solution = random_initial_solution(instance);
         population[i].fitness = population[i].solution->Z;
     }
 
-    // Boucle principale sur les générations
     for (int gen = 0; gen < generations; gen++) {
-        // 3. Sélection, croisement et mutation
+
         Individual *new_population = malloc(population_size * sizeof(Individual));
+        if (!new_population) {
+            perror("Erreur d'allocation mémoire pour new_population");
+            break;
+        }
+
         for (int i = 0; i < population_size; i++) {
-            // Sélection par tournoi
             Individual *parent1 = tournament_selection(population, population_size);
             Individual *parent2 = tournament_selection(population, population_size);
 
-            // Croisement
             KnapsackSolution *child = init_solution(instance->n);
             crossover(parent1->solution, parent2->solution, child, instance);
-
-            // Mutation
             mutate(child, instance, mutation_rate);
-
-            // Évaluation de l'enfant
             evaluate_solution(child, instance);
 
-            // Ajout à la nouvelle population
             new_population[i].solution = child;
             new_population[i].fitness = child->Z;
+
+            // Vérification du timeout à chaque itération
+            if (time_limit > 0) check_timeout(start_time, time_limit);
         }
 
-        // Application du VNS sur chaque individu de la nouvelle population
         for (int i = 0; i < population_size; i++) {
             variable_neighborhood_search(new_population[i].solution, instance, vns_iterations, k);
-            evaluate_solution(new_population[i].solution, instance); // Recalcul de la fitness après VNS
+            evaluate_solution(new_population[i].solution, instance);
+
+            // Vérification du timeout à chaque itération
+            if (time_limit > 0) check_timeout(start_time, time_limit);
         }
 
-        // Remplacement de l'ancienne population par la nouvelle
         free_population(population, population_size);
         population = new_population;
     }
 
-    // Retour de la meilleure solution trouvée
-    // Individual *best_individual =  init_individual(instance->n);
-    Individual *best_individual = &population[0];
-    for (int i = 0; i < population_size; i++) {
-        if (population[i].fitness > best_individual->fitness) {
-            best_individual = &population[i];
+cleanup:
+    // Vérifie si `population` est encore valide
+    if (population) {  
+        Individual *best_individual = &population[0];
+        for (int i = 1; i < population_size; i++) {
+            if (population[i].fitness > best_individual->fitness) {
+                best_individual = &population[i];
+            }
         }
+
+        KnapsackSolution *best_solution = init_solution(instance->n);
+        copy_knapsack_solution(best_solution, best_individual->solution, instance->n);
+
+        free_population(population, population_size);
+        return best_solution;
     }
 
-    // Vérifie que best_individual->solution est initialisé
-    if (best_individual == NULL || best_individual->solution == NULL) {
-        // Gestion d'erreur : best->solution n'est pas initialisé
-        free_population(population, population_size);
-        return NULL;
-    }
-    KnapsackSolution *best_solution = init_solution(instance->n);
-    copy_knapsack_solution(best_solution, best_individual->solution, instance->n);
-    
-    free_population(population, population_size);
-    return best_solution;
+    return NULL;  // Si `longjmp` a provoqué une erreur avant l'initiation de population
 }
