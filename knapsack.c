@@ -61,13 +61,21 @@ void read_knapsack_file(const char *filename, KnapsackInstance *instance)
     // Lire les coefficients des objets (couts/valeur/profit)
     for (int i = 0; i < instance->n; i++)
     {
-        fscanf(file, "%d", &instance->profits[i]);
+        if (fscanf(file, "%d", &instance->profits[i]) != 1) {
+            // Gérer l'erreur de lecture
+            fprintf(stderr, "Erreur de lecture des profits\n");
+            exit(EXIT_FAILURE);
+        }
     }
 
     // Lire les capacités des contraintes
     for (int i = 0; i < instance->m; i++)
     {
-        fscanf(file, "%d", &instance->capacities[i]);
+        if (fscanf(file, "%d", &instance->capacities[i]) != 1) {
+            // Gérer l'erreur de lecture
+            fprintf(stderr, "Erreur de lecture des capacités\n");
+            exit(EXIT_FAILURE);
+        }
     }
 
     // Lire les poids des objets pour chaque contrainte
@@ -75,7 +83,11 @@ void read_knapsack_file(const char *filename, KnapsackInstance *instance)
     {
         for (int j = 0; j < instance->n; j++)
         {
-            fscanf(file, "%d", &instance->weights[i][j]);
+            if (fscanf(file, "%d", &instance->weights[i][j]) != 1) {
+                // Gérer l'erreur de lecture
+                fprintf(stderr, "Erreur de lecture des poids\n");
+                exit(EXIT_FAILURE);
+            }
         }
     }
 
