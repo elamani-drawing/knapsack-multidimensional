@@ -17,26 +17,28 @@ int main(int argc, char *argv[])
     // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // KnapsackSolution *ksSolution = greedy_initial_solution(&ksInstance);
 
+    /*
+    KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
+    printf("Avant flip : Z = %d\n", ksSolution->Z);
+    local_search_1_flip(ksSolution, &ksInstance);
+    */
+   
+    /*
+    KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
+    printf("Avant swap : Z = %d\n", ksSolution->Z);
+    local_search_swap(ksSolution, &ksInstance);
+    */
 
-    // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
-    // printf("Avant flip : Z = %d\n", ksSolution->Z);
-    // local_search_1_flip(ksSolution, &ksInstance);
-
-
-    // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
-    // printf("Avant swap : Z = %d\n", ksSolution->Z);
-    // local_search_swap(ksSolution, &ksInstance);
-
-
-    // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
-    // printf("Avant neighborhood descent : Z = %d\n", ksSolution->Z);
-    // variable_neighborhood_descent(ksSolution, &ksInstance, temps_max); 
-
-
-    // // Appliquer la recherche à voisinage variable (VNS)
-    // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
-    // printf("Avant VNS descent : Z = %d\n", ksSolution->Z);
-    // variable_neighborhood_search(ksSolution, &ksInstance, 3555555, 4, temps_max);
+    /*
+    KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
+    printf("Avant neighborhood descent : Z = %d\n", ksSolution->Z);
+    variable_neighborhood_descent(ksSolution, &ksInstance, temps_max); 
+    */
+    
+    // Appliquer la recherche à voisinage variable (VNS)
+    KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
+    printf("Avant VNS descent : Z = %d\n", ksSolution->Z);
+    variable_neighborhood_search(ksSolution, &ksInstance, 3555555, 4, temps_max);
 
     
     // KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 5000, 5000, 0.05, temps_max); // population, generations, mutation_rate, temps_max

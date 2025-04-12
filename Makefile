@@ -48,21 +48,21 @@ distcleanl: cleanfl
 # Test de l'exécution
 
 run: $(EXEC)
-	./$(EXEC) ./Instances_MKP/100M5_1.txt 2
+	./$(EXEC) ./Instances_MKP/100M5_1.txt 5
 
 run2: $(EXEC)
-	./$(EXEC) ./Instances_MKP/250M5_21.txt 4
+	./$(EXEC) ./Instances_MKP/250M5_21.txt 5
 
 # Compiler le benchmark (sans exécution)
 bench: $(BENCH_EXEC)
 
 # Exécuter le benchmark
 benchr: $(BENCH_EXEC)
-	./$(BENCH_EXEC)  ./Instances_MKP/500M30_21.txt 2
+	./$(BENCH_EXEC)  ./Instances_MKP/500M30_21.txt 5
 
 # Exécuter le benchmark sur tout les fichier d'un repertoire
 benchr2: $(BENCH_EXEC)
-	./$(BENCH_EXEC) -D ./Instances_MKP/ 2
+	./$(BENCH_EXEC) -D ./Instances_MKP/ 5
 	
 # Vous devez avoir doxygene d'installer
 docs:
