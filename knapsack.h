@@ -129,6 +129,14 @@ int is_feasible(const KnapsackSolution *solution, const KnapsackInstance *instan
 
 
 /**
+ * Calcule le nombre d'objets sélectionnés dans une solution du problème de sac à dos
+ * @param solution La solution à analyser
+ * @param instance L'instance du problème (pour connaître le nombre total d'objets)
+ * @return Le nombre d'objets sélectionnés dans la solution
+ */
+int solution_length(const KnapsackSolution *solution, const KnapsackInstance *instance);
+
+/**
  * @brief Affiche les valeurs (profits) des objets sélectionnés dans la solution.
  *
  * Cette fonction parcourt la solution et affiche les profits des objets sélectionnés.

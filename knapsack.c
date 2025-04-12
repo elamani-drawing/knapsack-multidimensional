@@ -208,6 +208,20 @@ int is_feasible(const KnapsackSolution *solution, const KnapsackInstance *instan
     return 1; // La solution est valide
 }
 
+
+int solution_length(const KnapsackSolution *solution, const KnapsackInstance *instance) {
+    int count = 0;
+    
+    // Parcourir tous les objets et compter ceux qui sont sélectionnés (x[i] == 1)
+    for (int i = 0; i < instance->n; i++) {
+        if (solution->x[i] == 1) {
+            count++;
+        }
+    }
+    
+    return count;
+}
+
 void print_solution(const KnapsackSolution *solution, const KnapsackInstance *instance)
 {
     printf("\nSolution sélectionnée (Valeurs des objets) :\n");
