@@ -11,22 +11,37 @@ int main(int argc, char *argv[])
 
     KnapsackInstance ksInstance;
     read_knapsack_file(argv[1], &ksInstance);
-    KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 5000, 5000, 0.05, 3);
-    // KnapsackSolution *ksSolution = hybrid_GA_VNS(&ksInstance, 100, 100, 0.05, 100, 2,3);
+
+    int temps_max = atoi(argv[2]);
+
+    // KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 5000, 5000, 0.05, temps_max); // population, generations, mutation_rate, temps_max
+    KnapsackSolution *ksSolution = hybrid_GA_VNS(&ksInstance, 100, 100, 0.05, 100, 2,temps_max, 1); // population, generations, mutation_rate, vns_iteration, k, temps_max, neighborhood (flip_1)
+
 
     // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // KnapsackSolution *ksSolution = greedy_initial_solution(&ksInstance);
 
+
+    // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // printf("Avant flip : Z = %d\n", ksSolution->Z);
     // local_search_1_flip(ksSolution, &ksInstance);
+
+
+    // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
+    // printf("Avant swap : Z = %d\n", ksSolution->Z);
     // local_search_swap(ksSolution, &ksInstance);
 
+
+    // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // printf("Avant neighborhood descent : Z = %d\n", ksSolution->Z);
-    // variable_neighborhood_descent(ksSolution, &ksInstance, 1);
+    // variable_neighborhood_descent(ksSolution, &ksInstance, temps_max, 1); //  temps_max, 1 (flip_1)
+
 
     // // Appliquer la recherche à voisinage variable (VNS)
+    // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // printf("Avant VNS descent : Z = %d\n", ksSolution->Z);
-    // variable_neighborhood_search(ksSolution, &ksInstance, 3555555, 4, 1);
+    // variable_neighborhood_search(ksSolution, &ksInstance, 3555555, 4, temps_max, 1); // temps_max, 1 (flip_1)
+
 
     print_solution(ksSolution, &ksInstance);
     print_solution_index(ksSolution, ksInstance.n);
