@@ -82,7 +82,7 @@ KnapsackSolution* genetic_algorithm(const KnapsackInstance *instance, int popula
         timeout_flag = 0;
         start_time = get_current_time();
         if (setjmp(env) != 0) {
-            printf("Temps écoulé ! Arrêt de l'algorithme (genetic_algorithm).");
+            printf("Temps écoulé ! Arrêt de l'algorithme (genetic_algorithm).\n");
             goto cleanup;
         }
     }
@@ -160,7 +160,7 @@ KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population
         timeout_flag = 0;
         start_time = get_current_time();
         if (setjmp(env) != 0) {
-            printf("Temps écoulé ! Arrêt de l'algorithme (hybrid_GA_VNS).");
+            printf("Temps écoulé ! Arrêt de l'algorithme (hybrid_GA_VNS).\n");
             goto cleanup;
         }
     }
