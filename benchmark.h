@@ -10,6 +10,7 @@
 #include <dirent.h>
 #include <string.h>
 #include "heuristique.h"
+#include "genetic.h"
 
 
 typedef struct {
@@ -21,6 +22,8 @@ typedef struct {
 typedef struct {
     ResultEntry greedy_vns;
     ResultEntry random_vns;
+    ResultEntry genetic;
+    ResultEntry hybrid;
 } ExperimentalResultsKSM;
 
 
@@ -43,6 +46,39 @@ double get_cpu_time();
  */
 ResultEntry run_experiment(const KnapsackInstance *instance, KnapsackSolution *(*initialization_function)(const KnapsackInstance *), int temps_max);
 
+
+/**
+ * @brief Exécute l'algorithme génétique sur une instance de sac à dos donnée.
+ * 
+ * @param instance L'instance du problème du sac à dos à résoudre.
+ * @param population_size La taille de la population pour l'algorithme génétique.
+ * @param generations Le nombre de générations à exécuter.
+ * @param mutation_rate Le taux de mutation pour l'algorithme génétique.
+ * @param time_limit Le temps maximum autorisé pour l'exécution de l'algorithme (en secondes).
+ * 
+ * @return Les résultats de l'algorithme, comprenant la valeur de la solution, le temps CPU et la taille de la solution.
+ * 
+ * @note Cette fonction exécute l'algorithme génétique sur l'instance donnée et retourne les résultats sous forme de structure `ResultEntry`.
+ *       Elle mesure le temps CPU écoulé pendant l'exécution et calcule la taille de la solution.
+ */
+ResultEntry run_hybrid_algorithm(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k, int time_limit);
+
+
+/**
+ * @brief Exécute l'algorithme génétique sur une instance de sac à dos donnée.
+ * 
+ * @param instance L'instance du problème du sac à dos à résoudre.
+ * @param population_size La taille de la population pour l'algorithme génétique.
+ * @param generations Le nombre de générations à exécuter.
+ * @param mutation_rate Le taux de mutation pour l'algorithme génétique.
+ * @param time_limit Le temps maximum autorisé pour l'exécution de l'algorithme (en secondes).
+ * 
+ * @return Les résultats de l'algorithme, comprenant la valeur de la solution, le temps CPU et la taille de la solution.
+ * 
+ * @note Cette fonction exécute l'algorithme génétique sur l'instance donnée et retourne les résultats sous forme de structure `ResultEntry`.
+ *      Elle mesure le temps CPU écoulé pendant l'exécution et calcule la taille de la solution.
+ */
+ResultEntry run_genetic_algorithm(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int time_limit) ;
 
 /**
  * @brief Exécute toutes les expériences sur une instance de sac à dos donnée.

@@ -21,11 +21,43 @@ ResultEntry run_experiment(const KnapsackInstance *instance, KnapsackSolution *(
     return result;
 }
 
+ResultEntry run_genetic_algorithm(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int temps_max) {
+    ResultEntry result;
+    double start_time = get_cpu_time();
+    KnapsackSolution *solution = genetic_algorithm(instance, population_size, generations, mutation_rate, temps_max);
+    double end_time = get_cpu_time();
+
+    result.value = solution->Z;
+    result.time = end_time - start_time;
+    result.length = solution_length(solution, instance);
+
+    free_solution(solution);
+    return result;
+}
+
+ResultEntry run_hybrid_algorithm(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k, int temps_max) {
+    ResultEntry result;
+    double start_time = get_cpu_time();
+    KnapsackSolution *solution = hybrid_GA_VNS(instance, population_size, generations, mutation_rate, vns_iterations, k, temps_max);
+    double end_time = get_cpu_time();
+
+    result.value = solution->Z;
+    result.time = end_time - start_time;
+    result.length = solution_length(solution, instance);
+
+    free_solution(solution);
+    return result;
+}
+
+
 ExperimentalResultsKSM run_all_experiments(const KnapsackInstance *instance, int temps_max)
 {
     ExperimentalResultsKSM results;
     results.greedy_vns = run_experiment(instance, greedy_initial_solution, temps_max);
     results.random_vns = run_experiment(instance, random_initial_solution, temps_max);
+
+    results.genetic = run_genetic_algorithm(instance, 50, 100, 0.05, temps_max);
+    results.hybrid = run_hybrid_algorithm(instance, 50, 100, 0.05, 100, 2, temps_max);
     return results;
 }
 void print_results_table(const ExperimentalResultsKSM *results)
@@ -40,10 +72,15 @@ void print_results_table(const ExperimentalResultsKSM *results)
     printf("+------------------------------+-------------------------+-------------------------+----------+\n");
 
     // Ligne Gloutonne - alignement parfait avec les en-têtes
-    printf("| %-28s | %21.2f | %21.6f | %8d |\n",  "Gloutonne",  results->greedy_vns.value, results->greedy_vns.time,  results->greedy_vns.length);
+    printf("| %-28s | %21.2f | %21.6f | %8d |\n",  "VNS Gloutonne",  results->greedy_vns.value, results->greedy_vns.time,  results->greedy_vns.length);
 
-    // Ligne Aléatoire - alignement cohérent
-    printf("| %-28s | %21.2f | %21.6f | %8d |\n", "Aléatoire",  results->random_vns.value,     results->random_vns.time,     results->random_vns.length);
+    // Ligne Aléatoire 
+    printf("| %-28s | %21.2f | %21.6f | %8d |\n", "VNS Aléatoire",  results->random_vns.value,     results->random_vns.time,     results->random_vns.length);
+    // Ligne Génétique
+
+    printf("| %-28s | %21.2f | %21.6f | %8d |\n", "Génétique", results->genetic.value, results->genetic.time, results->genetic.length);
+    // Ligne Hybride GA + VNS
+    printf("| %-28s | %21.2f | %21.6f | %8d |\n", "Hybride GA + VNS", results->hybrid.value, results->hybrid.time, results->hybrid.length);
 
     // Ligne de séparation finale
     printf("+------------------------------+-------------------------+-------------------------+----------+\n");
