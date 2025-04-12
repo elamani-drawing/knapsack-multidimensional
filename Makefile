@@ -59,6 +59,10 @@ bench: $(BENCH_EXEC)
 # Exécuter le benchmark
 benchr: $(BENCH_EXEC)
 	./$(BENCH_EXEC)  ./Instances_MKP/500M30_21.txt 2
+
+# Exécuter le benchmark sur tout les fichier d'un repertoire
+benchr2: $(BENCH_EXEC)
+	./$(BENCH_EXEC) -D ./Instances_MKP/ 2
 	
 # Vous devez avoir doxygene d'installer
 docs:

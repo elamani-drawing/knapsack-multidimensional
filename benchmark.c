@@ -1,60 +1,53 @@
 #include "benchmark.h"
 
-double get_cpu_time() {
+double get_cpu_time()
+{
     return (double)clock() / CLOCKS_PER_SEC;
 }
 
-
-ExperimentalResultsKSM run_experiments(const KnapsackInstance *instance, KnapsackSolution *(*initialization_function)(const KnapsackInstance *)) {
-    ExperimentalResultsKSM results;
-    
-    // Mesurer le temps CPU et la valeur de la solution initiale
+ResultEntry run_experiment(const KnapsackInstance *instance, KnapsackSolution *(*initialization_function)(const KnapsackInstance *), int temps_max)
+{
+    ResultEntry result;
     double start_time = get_cpu_time();
-    KnapsackSolution *initial_solution = initialization_function(instance);
+    KnapsackSolution *solution = initialization_function(instance);
+    variable_neighborhood_search(solution, instance, 100, 2, temps_max);
     double end_time = get_cpu_time();
-    results.initial_value = initial_solution->Z;
-    results.initial_time = end_time - start_time;
-    
-    // Mesurer le temps CPU et la valeur après recherche locale (1-flip)
-    start_time = get_cpu_time();
-    local_search_1_flip(initial_solution, instance);
-    end_time = get_cpu_time();
-    results.ls_value = initial_solution->Z;
-    results.ls_time = end_time - start_time;
 
-    // Mesurer le temps CPU et la valeur après VND
-    start_time = get_cpu_time();
-    variable_neighborhood_descent(initial_solution, instance, 0);
-    end_time = get_cpu_time();
-    results.vnd_value = initial_solution->Z;
-    results.vnd_time = end_time - start_time;
+    result.value = solution->Z;
+    result.time = end_time - start_time;
+    result.length = solution_length(solution, instance);
 
-    // Mesurer le temps CPU et la valeur après VNS
-    start_time = get_cpu_time();
-    variable_neighborhood_search(initial_solution, instance, 100, 2, 0);
-    end_time = get_cpu_time();
-    results.vns_value = initial_solution->Z;
-    results.vns_time = end_time - start_time;
+    free_solution(solution);
+    return result;
+}
 
-    // Libérer la mémoire de la solution initiale
-    free_solution(initial_solution);
+ExperimentalResultsKSM run_all_experiments(const KnapsackInstance *instance, int temps_max)
+{
+    ExperimentalResultsKSM results;
+    results.greedy_vns = run_experiment(instance, greedy_initial_solution, temps_max);
+    results.random_vns = run_experiment(instance, random_initial_solution, temps_max);
     return results;
 }
+void print_results_table(const ExperimentalResultsKSM *results)
+{
+    // Ligne de séparation complète avec la colonne Tailles
+    printf("+------------------------------+-------------------------+-------------------------+----------+\n");
 
+    // En-têtes des colonnes bien alignés
+    printf("| %-28s | %-21s | %-21s | %-8s |\n",   "Combinaison", "Valeur de la solution", "Temps CPU (secondes)", "Tailles");
 
-void print_results_table(const ExperimentalResultsKSM *results) {
-    printf("+---------------------+---------------------+---------------------+\n");
-    printf("| Étape               | Valeur de la solution | Temps CPU (secondes) |\n");
-    printf("+---------------------+---------------------+---------------------+\n");
-    printf("| Solution initiale   | %19.2f | %19.6f |\n", results->initial_value, results->initial_time);
-    printf("| Après recherche LS  | %19.2f | %19.6f |\n", results->ls_value, results->ls_time);
-    printf("| Après VND           | %19.2f | %19.6f |\n", results->vnd_value, results->vnd_time);
-    printf("| Après VNS           | %19.2f | %19.6f |\n", results->vns_value, results->vns_time);
-    printf("+---------------------+---------------------+---------------------+\n");
+    // Ligne de séparation
+    printf("+------------------------------+-------------------------+-------------------------+----------+\n");
+
+    // Ligne Gloutonne - alignement parfait avec les en-têtes
+    printf("| %-28s | %21.2f | %21.6f | %8d |\n",  "Gloutonne",  results->greedy_vns.value, results->greedy_vns.time,  results->greedy_vns.length);
+
+    // Ligne Aléatoire - alignement cohérent
+    printf("| %-28s | %21.2f | %21.6f | %8d |\n", "Aléatoire",  results->random_vns.value,     results->random_vns.time,     results->random_vns.length);
+
+    // Ligne de séparation finale
+    printf("+------------------------------+-------------------------+-------------------------+----------+\n");
 }
-
-
-
 int main(int argc, char *argv[])
 {
     if (argc < 3)
@@ -83,6 +76,7 @@ int main(int argc, char *argv[])
     {
         path_instance = argv[1];
     }
+    int temps_max = atof(argv[is_directory_mode ? 3 : 2]);
 
     if (is_directory_mode)
     {
@@ -97,36 +91,27 @@ int main(int argc, char *argv[])
         {
             char full_path[1024];
             snprintf(full_path, sizeof(full_path), "%s/%s", path_instance, entry->d_name);
-        
+
             struct stat st;
             if (stat(full_path, &st) == 0 && S_ISREG(st.st_mode))
             {
                 printf("\n\n=== Instance : %s ===\n", entry->d_name);
                 KnapsackInstance ksInstance;
                 read_knapsack_file(full_path, &ksInstance);
-        
-                printf("Résultats avec initialisation gloutonne :\n");
-                ExperimentalResultsKSM results_greedy = run_experiments(&ksInstance, greedy_initial_solution);
-                print_results_table(&results_greedy);
-        
-                printf("\nRésultats avec initialisation aléatoire :\n");
-                ExperimentalResultsKSM results_random = run_experiments(&ksInstance, random_initial_solution);
-                print_results_table(&results_random);
+
+                ExperimentalResultsKSM results = run_all_experiments(&ksInstance, temps_max);
+                print_results_table(&results);
             }
         }
+        closedir(dir);
     }
     else
     {
         KnapsackInstance ksInstance;
         read_knapsack_file(path_instance, &ksInstance);
 
-        printf("Résultats avec initialisation gloutonne :\n");
-        ExperimentalResultsKSM results_greedy = run_experiments(&ksInstance, greedy_initial_solution);
-        print_results_table(&results_greedy);
-
-        printf("\nRésultats avec initialisation aléatoire :\n");
-        ExperimentalResultsKSM results_random = run_experiments(&ksInstance, random_initial_solution);
-        print_results_table(&results_random);
+        ExperimentalResultsKSM results = run_all_experiments(&ksInstance, temps_max);
+        print_results_table(&results);
     }
 
     return 0;
