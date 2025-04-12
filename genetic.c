@@ -153,7 +153,7 @@ cleanup:
 
 
 
-KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k, int time_limit) {
+KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k, int time_limit, int neighborhood) {
     // LARGE_INTEGER start_time;
 
     if (time_limit > 0) {
@@ -202,7 +202,7 @@ KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population
         }
 
         for (int i = 0; i < population_size; i++) {
-            variable_neighborhood_search(new_population[i].solution, instance, vns_iterations, k, 0);
+            variable_neighborhood_search(new_population[i].solution, instance, vns_iterations, k, 0, neighborhood);
             evaluate_solution(new_population[i].solution, instance);
 
             // Vérification du timeout à chaque itération

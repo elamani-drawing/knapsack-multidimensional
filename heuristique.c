@@ -251,7 +251,7 @@ void local_search_swap(KnapsackSolution *solution, const KnapsackInstance *insta
 }
 
 
-void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackInstance *instance, int time_limit)  {
+void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackInstance *instance, int time_limit, int neighborhood)  {
     if (time_limit > 0) {
         timeout_flag = 0;
         start_time = get_current_time();
@@ -260,7 +260,6 @@ void variable_neighborhood_descent(KnapsackSolution *solution, const KnapsackIns
             return;  // Sortir de la fonction si le temps est écoulé
         }
     }
-    int neighborhood = 1; // 1 = flip_1, 2 = swap
     int improved;
 
     do {
@@ -305,7 +304,7 @@ void random_flip(KnapsackSolution *solution, const KnapsackInstance *instance, i
     }
 }
 
-void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k_perturbation, int time_limit) {
+void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInstance *instance, int max_iterations, int k_perturbation, int time_limit, int neighborhood) {
 
     if (time_limit > 0) {
         timeout_flag = 0;
@@ -322,7 +321,7 @@ void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInst
 
     while (iteration < max_iterations) {
         // Phase de VND
-        variable_neighborhood_descent(solution, instance, 0);
+        variable_neighborhood_descent(solution, instance, 0, neighborhood);
 
         // Sauvegarder la meilleure solution trouvée (copie profonde)
         if (solution->Z > best_solution->Z) {
@@ -333,7 +332,7 @@ void variable_neighborhood_search(KnapsackSolution *solution, const KnapsackInst
         random_flip(solution, instance, k_perturbation);
 
         // Phase de VND après perturbation
-        variable_neighborhood_descent(solution, instance, 0);
+        variable_neighborhood_descent(solution, instance, 0, neighborhood);
 
         // Si la solution après perturbation est meilleure, la conserver
         if (solution->Z > best_solution->Z) {
