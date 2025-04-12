@@ -14,10 +14,6 @@ int main(int argc, char *argv[])
 
     int temps_max = atoi(argv[2]);
 
-    // KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 5000, 5000, 0.05, temps_max); // population, generations, mutation_rate, temps_max
-    KnapsackSolution *ksSolution = hybrid_GA_VNS(&ksInstance, 100, 100, 0.05, 100, 2,temps_max, 1); // population, generations, mutation_rate, vns_iteration, k, temps_max, neighborhood (flip_1)
-
-
     // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // KnapsackSolution *ksSolution = greedy_initial_solution(&ksInstance);
 
@@ -34,13 +30,17 @@ int main(int argc, char *argv[])
 
     // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // printf("Avant neighborhood descent : Z = %d\n", ksSolution->Z);
-    // variable_neighborhood_descent(ksSolution, &ksInstance, temps_max, 1); //  temps_max, 1 (flip_1)
+    // variable_neighborhood_descent(ksSolution, &ksInstance, temps_max); 
 
 
     // // Appliquer la recherche à voisinage variable (VNS)
     // KnapsackSolution *ksSolution = random_initial_solution(&ksInstance);
     // printf("Avant VNS descent : Z = %d\n", ksSolution->Z);
-    // variable_neighborhood_search(ksSolution, &ksInstance, 3555555, 4, temps_max, 1); // temps_max, 1 (flip_1)
+    // variable_neighborhood_search(ksSolution, &ksInstance, 3555555, 4, temps_max);
+
+    
+    // KnapsackSolution *ksSolution = genetic_algorithm(&ksInstance, 5000, 5000, 0.05, temps_max); // population, generations, mutation_rate, temps_max
+    // KnapsackSolution *ksSolution = hybrid_GA_VNS(&ksInstance, 100, 100, 0.05, 100, 2,temps_max); // population, generations, mutation_rate, vns_iteration, k, temps_max
 
 
     print_solution(ksSolution, &ksInstance);

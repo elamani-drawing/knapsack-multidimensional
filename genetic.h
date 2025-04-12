@@ -114,9 +114,8 @@ void free_population(Individual *population, int population_size) ;
  * @param vns_iterations Nombre d'itérations du VNS pour chaque solution après croisement et mutation.
  * @param k Nombre de voisinages à explorer lors de l'application du VNS.
  * @param time_limit La limite de temps en secondes pour l'exécution de l'algorithme (0 pour illimité).
-* @param neighborhood La stratégie de voisinage à utiliser pour VND (1 pour `flip_1`, 2 pour `swap`).
  * @return KnapsackSolution* Pointeur vers la meilleure solution trouvée à la fin des générations ou avant expiration du temps imparti.
  */
-KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k, int time_limit, int neighborhood);
+KnapsackSolution* hybrid_GA_VNS(const KnapsackInstance *instance, int population_size, int generations, double mutation_rate, int vns_iterations, int k, int time_limit);
 
 #endif //GENETIC_H

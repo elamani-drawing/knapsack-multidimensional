@@ -48,7 +48,7 @@ distcleanl: cleanfl
 # Test de l'exécution
 
 run: $(EXEC)
-	./$(EXEC) ./Instances_MKP/100M5_1.txt 4
+	./$(EXEC) ./Instances_MKP/100M5_1.txt 2
 
 run2: $(EXEC)
 	./$(EXEC) ./Instances_MKP/250M5_21.txt 4
