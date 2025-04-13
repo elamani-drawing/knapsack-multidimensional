@@ -4,7 +4,10 @@
         "stdlib.h": "c",
         "heuristique.h": "c",
         "stdio.h": "c",
-        "benchmark.h": "c"
+        "benchmark.h": "c",
+        "string.h": "c",
+        "genetic.h": "c",
+        "stat.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

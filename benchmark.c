@@ -421,7 +421,7 @@ int genetic_algorithm_tests(const char *chemin_fichier, int temps_max)
     // Définir les paramètres du test
     int populations[] = {10, 100, 200, 400, 1000, 1300};
     int generations[] = {10, 50, 100, 300, 500,1000};
-    double mutation_rates[] = {0.05, 0.1, 1,6, 10, 15, 20};
+    double mutation_rates[] = {0.05, 0.1, 1, 6, 10, 15, 20};
 
     // Lire le fichier (ici on suppose que le fichier contient une instance de knapsack)
     KnapsackInstance ksInstance;
@@ -558,6 +558,35 @@ int hybrid_vs_genetic_test(const char *repertoire, int population_size, int gene
     return 0;
 }
 
+int run_all(const char *path_instance) {
+    // meilleur config: population_size = 600, generations = 200, mutation_rate = 10, vns_iterations = 15000, k = 10, temps_max = 5
+    const char *fichiers[] = {"100M5_21.txt", "250M30_1.txt", "500M30_21.txt"};
+    // const char *fichiers[] = {"100M5_21.txt"};
+    int num_fichiers = sizeof(fichiers) / sizeof(fichiers[0]);
+    int temps_max = 5;
+    int population_size = 600, generations =200, vns_iterations =15000, k_perturbation = 10;
+    double mutation_rate = 10.0;
+    
+    // Attention tres couteux en mémoire, ne pas executer en meme temps que les autres
+    // return genetic_algorithm_tests("Instances_MKP/250M5_11.txt", 5); // Décommenter pour exécuter le test de l'algorithme génétique sur un fichier
+
+    // // Necessite le parametre -D pour fonctionner
+
+    // // Exporter les donner sur vns gloutonne et aleatoire    $
+    // // iteration
+    // vns_gloutonne_vs_aleatoire_vns_iteration(path_instance, fichiers, num_fichiers, k_perturbation); // Décommenter pour exécuter le test VNS Gloutonne vs Aléatoire sur un répertoire avec des itérations de 100 à 50000
+    // // // temps
+    // vns_gloutonne_vs_aleatoire_time(path_instance, fichiers, num_fichiers, vns_iterations, k_perturbation); // Décommenter pour exécuter le test VNS Gloutonne vs Aléatoire sur un répertoire avec des périodes de 1 à 10 secondes
+    // vns_gloutonne_vs_aleatoire_k_perturbation(path_instance, fichiers, num_fichiers, vns_iterations, 0); // Décommenter pour exécuter le test VNS Gloutonne vs Aléatoire sur un répertoire avec des valeurs de k de 10 à 100  
+    // vns_gloutonne_vs_aleatoire(path_instance, 5, vns_iterations, k_perturbation); // Décommenter pour exécuter le test VNS Gloutonne vs Aléatoire sur un répertoire
+    
+    // // Necessite le parametre -D pour fonctionner
+    // run_hybrid_algorithm_test(path_instance, population_size, generations, 10, vns_iterations, k_perturbation, 5); // Décommenter pour exécuter le test de l'algorithme hybride sur un répertoire
+
+    // // Necessite le parametre -D pour fonctionner
+    return hybrid_vs_genetic_test(path_instance, population_size, generations, mutation_rate, vns_iterations, k_perturbation, temps_max); // Décommenter pour exécuter le test de l'algorithme hybride vs génétique sur un répertoire
+
+}
 
 int main(int argc, char *argv[])
 {
@@ -596,9 +625,9 @@ int main(int argc, char *argv[])
     double mutation_rate = 10.0;
 
     int temps_max = atof(argv[is_directory_mode ? 3 : 2]);
-    // return basic_test(is_directory_mode, path_instance, temps_max, population_size, generations, mutation_rate, vns_iterations, k_perturbation);
+    return basic_test(is_directory_mode, path_instance, temps_max, population_size, generations, mutation_rate, vns_iterations, k_perturbation);
     
-   
+    // Attention tres couteux en mémoire, ne pas executer en meme temps que les autres
     // return genetic_algorithm_tests("Instances_MKP/250M5_11.txt", 5); // Décommenter pour exécuter le test de l'algorithme génétique sur un fichier
 
     // Necessite le parametre -D pour fonctionner
@@ -617,23 +646,5 @@ int main(int argc, char *argv[])
     // Necessite le parametre -D pour fonctionner
     // return hybrid_vs_genetic_test(path_instance, population_size, generations, mutation_rate, vns_iterations, k_perturbation, temps_max); // Décommenter pour exécuter le test de l'algorithme hybride vs génétique sur un répertoire
 
-    
-    genetic_algorithm_tests("Instances_MKP/250M5_11.txt", 5); // Décommenter pour exécuter le test de l'algorithme génétique sur un fichier
-
-    // Necessite le parametre -D pour fonctionner
-
-    // Exporter les donner sur vns gloutonne et aleatoire    $
-    // iteration
-    vns_gloutonne_vs_aleatoire_vns_iteration(path_instance, fichiers, num_fichiers, k_perturbation); // Décommenter pour exécuter le test VNS Gloutonne vs Aléatoire sur un répertoire avec des itérations de 100 à 50000
-    // temps
-    vns_gloutonne_vs_aleatoire_time(path_instance, fichiers, num_fichiers, vns_iterations, k_perturbation); // Décommenter pour exécuter le test VNS Gloutonne vs Aléatoire sur un répertoire avec des périodes de 1 à 10 secondes
-    vns_gloutonne_vs_aleatoire_k_perturbation(path_instance, fichiers, num_fichiers, vns_iterations, 0); // Décommenter pour exécuter le test VNS Gloutonne vs Aléatoire sur un répertoire avec des valeurs de k de 10 à 100  
-    vns_gloutonne_vs_aleatoire(path_instance, 5, vns_iterations, k_perturbation); // Décommenter pour exécuter le test VNS Gloutonne vs Aléatoire sur un répertoire
-    
-    // Necessite le parametre -D pour fonctionner
-    run_hybrid_algorithm_test(path_instance, population_size, generations, 10, vns_iterations, k_perturbation, 5); // Décommenter pour exécuter le test de l'algorithme hybride sur un répertoire
-
-    // Necessite le parametre -D pour fonctionner
-    return hybrid_vs_genetic_test(path_instance, population_size, generations, mutation_rate, vns_iterations, k_perturbation, temps_max); // Décommenter pour exécuter le test de l'algorithme hybride vs génétique sur un répertoire
-
+    // return run_all(path_instance);
 }

@@ -12,7 +12,7 @@
 #include "heuristique.h"
 #include "genetic.h"
 
-#define SIZE_RESULT_BUFFER 1024 
+#define SIZE_RESULT_BUFFER 200 
 
 typedef struct {
     char filename[256]; // vns
